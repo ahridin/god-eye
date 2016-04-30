@@ -39,7 +39,7 @@ class InfluxDBHandler(object):
         self.port = config.INFLUXDB_PORT
         self.username = config.INFLUXDB_USERNAME
         self.password = config.INFLUXDB_PASSWORD
-        self.database = config.INFLUXDB_DBPASSW
+        self.database = config.INFLUXDB_DBNAME
 
     def get_client(self):
         client = None
