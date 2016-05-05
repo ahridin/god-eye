@@ -9,13 +9,22 @@
 
 
 ### How to run?
-> Python3.5 nhe =)))
         
-`python3.5 agent.py`
+`python3 agent.py`
 
 #### Install python3.5:
+Deprecated since version 0.0.3.
 ```
 sudo add-apt-repository ppa:fkrull/deadsnakes
 sudo apt-get update
 sudo apt-get install python3.5
 ```
+
+### Serf:
+#### Install:
+1. Download serf: https://www.serfdom.io/downloads.html
+2. Coppy to `/usr/local/bin`
+
+#### Run serf:
+- Master Node: `serf agent`
+- Cluster Node: `serf join $IP` with: `$IP` is ip of Master Node.

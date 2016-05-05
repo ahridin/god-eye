@@ -7,11 +7,13 @@ from agent.networkchecker import NetworkChecker
 import aiohttp
 # from datetime import datetime
 from agent.sendresult import SendResult
+from serfclient.client import SerfClient
 
 
 logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 logger = logging.getLogger(__name__)
 logging.getLogger("apscheduler.executors.default").setLevel("ERROR")
+
 
 # @asyncio.coroutine
 # def tick(dsf):
@@ -19,7 +21,7 @@ logging.getLogger("apscheduler.executors.default").setLevel("ERROR")
 #
 
 class Agent(object):
-    def __init__(self, _client, _loop, _queue, _snode = None):
+    def __init__(self, _client, _loop, _queue, _snode=None):
         """
 
         :param _client:
@@ -32,16 +34,22 @@ class Agent(object):
         self.network_checker = NetworkChecker(_client, _loop, _queue)
         self.scheduler = AsyncIOScheduler()
         self._add_job(_client)
+
+        self._serf_client = SerfClient()
         # hard list node for v0.0.1
-        self._hard_list_node = ['http://127.0.0.1:8080/', 'http://httpbin.org/get']
+        # self._hard_list_node = ['http://127.0.0.1:8080/',
+        #                         'http://httpbin.org/get']
         self._list_node = []
 
-
     def _add_job(self, _client):
-        # self.scheduler.add_job(tick, 'interval', seconds=config.check_interval, args=[_client,])
-        # self.scheduler.add_job(self._loop.call_soon_threadsafe, 'interval', seconds=config.check_interval, args=(self.network_checker,))
+        # self.scheduler.add_job(tick, 'interval',
+        # seconds=config.check_interval, args=[_client,])
+        # self.scheduler.add_job(self._loop.call_soon_threadsafe,
+        # 'interval', seconds=config.check_interval,
+        #  args=(self.network_checker,))
         self.scheduler.add_job(self.network_checker, 'interval',
-                               seconds=config.check_interval, args=(self._get_node,))
+                               seconds=config.check_interval,
+                               args=(self._get_node,))
 
     def _get_node(self):
         """
@@ -51,7 +59,10 @@ class Agent(object):
         try:
             return self._list_node.pop()
         except IndexError:
-            self._list_node = self._hard_list_node[:]
+            # self._list_node = self._hard_list_node[:]
+            response = self._serf_client.members()
+            self._list_node = ['http://{}'.format(x[b'Addr'].decode())
+                               for x in response.body[b'Members']]
             return self._get_node()
 
 
@@ -61,7 +72,7 @@ if __name__ == '__main__':
 
     queue = asyncio.Queue(loop=loop)
 
-    #khoi tao Task send_result
+    # khoi tao Task send_result
     send_result = SendResult(queue)
     asyncio.async(send_result())
 

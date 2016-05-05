@@ -2,7 +2,6 @@ import asyncio
 from abc import ABCMeta, abstractmethod
 import logging
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -26,7 +25,7 @@ class AbstractCheckPlugin(metaclass=ABCMeta):
 
     @asyncio.coroutine
     @abstractmethod
-    def get_result(self, result):
+    def get_result(self, *args, **kwargs):
         """
         nơi implement tính toán
 
