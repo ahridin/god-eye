@@ -44,7 +44,7 @@ class AbstractNetworkChecker(metaclass=ABCMeta):
     def real_call(self, dnode):
         if self._plugins:
             cors = [plugin(self._client, dnode) for plugin in self._plugins]
-            r = yield from asyncio.wait(cors, loop=self._loop)
+            r = yield from asyncio.wait(cors, loop=self._loop, timeout=config.check_timeout)
             return r
 
         raise Exception('No Plugin')
@@ -54,35 +54,17 @@ class NetworkChecker(AbstractNetworkChecker):
     def __call__(self, get_node):
         logger.info('Network checker start running')
         dnode = get_node()
-        future = asyncio.run_coroutine_threadsafe(self.real_call(dnode),
-                                                  self._loop)
-        try:
-            # Wait for the result with a timeout
-            result = future.result(config.check_timeout)
-        except asyncio.TimeoutError:
-            logger.info('The coroutine took too long, cancelling the task...')
-            future.cancel()
-        except Exception as exc:
-            logger.info('The coroutine raised an exception: {!r}'.format(exc))
-        else:
-            logger.info('The Checks returned: {!r}'.format(result))
-            logger.info('Network checker end!!!')
-
-            # logger.info('Network checker start running')
-            # node_target = get_node()
-            # try:
-            #     task = asyncio.async(asyncio.wait_for(
-            #           self.real_call(node_target), self._loop), self._loop)
-            #     # result = future.result(config.check_timeout)
-            #       # Wait for the result with a timeout
-            # except asyncio.TimeoutError:
-            #     logger.info('The coroutine took too long,
-            # cancelling the task...')
-            #     task.cancel()
-            # except Exception as exc:
-            #     logger.info('The coroutine raised an
-            # exception: {!r}'.format(exc))
-            # else:
-            #     logger.info('The coroutine returned: {!r}'
-            # .format(result))
-            #     logger.info('Network checker end!!!')
+        self._loop.create_task(self.real_call(dnode))
+        # future = asyncio.run_coroutine_threadsafe(self.real_call(dnode),
+        #                                           self._loop)
+        # try:
+        #     # Wait for the result with a timeout
+        #     result = future.result(config.check_timeout)
+        # except asyncio.TimeoutError:
+        #     logger.info('The coroutine took too long, cancelling the task...')
+        #     future.cancel()
+        # except Exception as exc:
+        #     logger.info('The coroutine raised an exception: {!r}'.format(exc))
+        # else:
+        #     logger.info('The Checks returned: {!r}'.format(result))
+        #     logger.info('Network checker end!!!')
