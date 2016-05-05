@@ -10,7 +10,7 @@ class SendResult(object):
 
     def __init__(self, queue):
         self._queue = queue
-        self.client = InfluxDBHandler.get_client()
+        self.client = InfluxDBHandler().get_client()
 
     @asyncio.coroutine
     def __call__(self):
