@@ -23,7 +23,7 @@ class Ping(AbstractCheckPlugin):
         :return:
         """
         logger.info("Ham get result: {}".format(result))
-        return result
+        return []
 
 # Fast test =)))
 # if __name__ == '__main__':
