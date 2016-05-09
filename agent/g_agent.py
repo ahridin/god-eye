@@ -31,7 +31,8 @@ class Agent(object):
         """
         self._loop = _loop
         self._queue = _queue
-        self.network_checker = NetworkChecker(_client, _loop, _queue)
+        self._snode = _snode or self._get_local_ip()
+        self.network_checker = NetworkChecker(_client, _loop, _queue, self._snode)
         self.scheduler = AsyncIOScheduler()
         self._add_job(_client)
 
@@ -41,7 +42,7 @@ class Agent(object):
         # self._hard_list_node = ['http://127.0.0.1:8080/',
         #                         'http://httpbin.org/get']
         self._list_node = []
-        self._snode = 'http://{}'.format(_snode or self._get_local_ip())
+
 
     def _add_job(self, _client):
         # self.scheduler.add_job(tick, 'interval',
@@ -63,7 +64,7 @@ class Agent(object):
         except IndexError:
             # self._list_node = self._hard_list_node[:]
             response = self._serf_client.members()
-            self._list_node = ['http://{}'.format(x[b'Addr'].decode())
+            self._list_node = [x[b'Addr'].decode()
                                for x in response.body[b'Members']]
             self._list_node.remove(self._snode)
 

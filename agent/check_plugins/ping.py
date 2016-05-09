@@ -7,10 +7,11 @@ logger = logging.getLogger(__name__)
 
 class Ping(AbstractCheckPlugin):
     @asyncio.coroutine
-    def __call__(self, client, node_target):
+    def __call__(self, client, dnode):
         logger.info('Ping running...')
+        logger.info('Ping from: {} to: {}'.format(self._snode, dnode))
 
-        r = yield from client.get(node_target)
+        r = yield from client.get('http://{}'.format(dnode))
         self.r = r
         text = yield from r.text()
         yield from self._queue.put(self.get_result(text))
