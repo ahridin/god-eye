@@ -53,8 +53,15 @@ class AbstractNetworkChecker(metaclass=ABCMeta):
 class NetworkChecker(AbstractNetworkChecker):
     def __call__(self, get_node):
         logger.info('Network checker start running')
-        dnode = get_node()
-        self._loop.create_task(self.real_call(dnode))
+
+        # TODO[techbk]: Apscheduler Events. Hiện đang cố gắng dùng cái này để
+        # stop Scheduler khi Job có lỗi. Ví dụ Job đang chạy nhưng list node
+        # = None thì job sẽ gửi event Error.
+        try:
+            dnode = get_node()
+            self._loop.create_task(self.real_call(dnode))
+        except IndexError as e:
+            logger.error(e)
         # future = asyncio.run_coroutine_threadsafe(self.real_call(dnode),
         #                                           self._loop)
         # try:

@@ -35,11 +35,13 @@ class Agent(object):
         self.scheduler = AsyncIOScheduler()
         self._add_job(_client)
 
+        # TODO[techbk] Serf có cung cấp hàm để get local ip không? Hiện chưa tìm thấy.
         self._serf_client = SerfClient()
         # hard list node for v0.0.1
         # self._hard_list_node = ['http://127.0.0.1:8080/',
         #                         'http://httpbin.org/get']
         self._list_node = []
+        self._snode = 'http://{}'.format(_snode or self._get_local_ip())
 
     def _add_job(self, _client):
         # self.scheduler.add_job(tick, 'interval',
@@ -63,8 +65,27 @@ class Agent(object):
             response = self._serf_client.members()
             self._list_node = ['http://{}'.format(x[b'Addr'].decode())
                                for x in response.body[b'Members']]
-            return self._get_node()
+            self._list_node.remove(self._snode)
 
+            return self._list_node.pop()
+
+
+    # TODO[techbk]: add config xác định rõ interface.
+    def _get_local_ip(self, ifname = b'eth0'):
+        """
+        Ở đây đang mặc định local_ip thuộc interface eth0
+        :return:
+        """
+        import socket
+        import fcntl
+        import struct
+
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        return socket.inet_ntoa(fcntl.ioctl(
+            s.fileno(),
+            0x8915,  # SIOCGIFADDR
+            struct.pack('256s', ifname[:15])
+        )[20:24])
 
 if __name__ == '__main__':
 
