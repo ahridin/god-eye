@@ -8,11 +8,19 @@ logger = logging.getLogger(__name__)
 
 
 class AbstractNetworkChecker(metaclass=ABCMeta):
-    def __init__(self, client, loop, queue):
+    def __init__(self, client, loop, queue, snode):
+        """
+
+        :param aiohttp.ClientSession client:
+        :param loop:
+        :param queue:
+        :param str snode: local IP, example: '192.168.145.151'
+        """
         self._plugins = []
         self._client = client
         self._loop = loop
         self._queue = queue
+        self._snode = snode
 
         # cai nay de duoi cung
         self._load_plugins()
@@ -34,7 +42,7 @@ class AbstractNetworkChecker(metaclass=ABCMeta):
 
     def _load_plugin(self, name, path, **kwarg):
         plugin = importlib.import_module(path, __name__)
-        return getattr(plugin, name)(self._loop, self._queue, **kwarg)
+        return getattr(plugin, name)(self._loop, self._queue, self._snode, **kwarg)
 
     @abstractmethod
     def __call__(self, *args, **kwargs):
@@ -53,8 +61,15 @@ class AbstractNetworkChecker(metaclass=ABCMeta):
 class NetworkChecker(AbstractNetworkChecker):
     def __call__(self, get_node):
         logger.info('Network checker start running')
-        dnode = get_node()
-        self._loop.create_task(self.real_call(dnode))
+
+        # TODO[techbk]: Apscheduler Events. Hiện đang cố gắng dùng cái này để
+        # stop Scheduler khi Job có lỗi. Ví dụ Job đang chạy nhưng list node
+        # = None thì job sẽ gửi event Error.
+        try:
+            dnode = get_node()
+            self._loop.create_task(self.real_call(dnode))
+        except IndexError as e:
+            logger.error(e)
         # future = asyncio.run_coroutine_threadsafe(self.real_call(dnode),
         #                                           self._loop)
         # try:

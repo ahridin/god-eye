@@ -6,9 +6,17 @@ logger = logging.getLogger(__name__)
 
 
 class AbstractCheckPlugin(metaclass=ABCMeta):
-    def __init__(self, loop, queue, **kwargs):
+    def __init__(self, loop, queue, snode, **kwargs):
+        """
+
+        :param loop:
+        :param queue:
+        :param str snode: local IP, example: '192.168.145.151'
+        :param kwargs:
+        """
         self._loop = loop
         self._queue = queue
+        self._snode = snode
 
     @asyncio.coroutine
     @abstractmethod
