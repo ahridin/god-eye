@@ -31,16 +31,13 @@ class Agent(object):
         """
         self._loop = _loop
         self._queue = _queue
+        self._serf_client = SerfClient()
         self._snode = _snode or self._get_local_ip()
         self.network_checker = NetworkChecker(_client, _loop, _queue, self._snode)
         self.scheduler = AsyncIOScheduler()
         self._add_job(_client)
 
-        # TODO[techbk] Serf có cung cấp hàm để get local ip không? Hiện chưa tìm thấy.
-        self._serf_client = SerfClient()
-        # hard list node for v0.0.1
-        # self._hard_list_node = ['http://127.0.0.1:8080/',
-        #                         'http://httpbin.org/get']
+
         self._list_node = []
 
 
@@ -71,22 +68,15 @@ class Agent(object):
             return self._list_node.pop()
 
 
-    # TODO[techbk]: add config xác định rõ interface.
-    def _get_local_ip(self, ifname = b'eth0'):
+    def _get_local_ip(self):
         """
-        Ở đây đang mặc định local_ip thuộc interface eth0
+        Get `name` of node thông qua serfclient `stats`.
+        Then, get ip thoong qua function `members(name)`
         :return:
         """
-        import socket
-        import fcntl
-        import struct
+        name = self._serf_client.stats().body[b'agent'][b'name']
+        return self._serf_client.members(name).body[b'Members'][0][b'Addr'].decode()
 
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        return socket.inet_ntoa(fcntl.ioctl(
-            s.fileno(),
-            0x8915,  # SIOCGIFADDR
-            struct.pack('256s', ifname[:15])
-        )[20:24])
 
 if __name__ == '__main__':
 
