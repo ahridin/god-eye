@@ -17,9 +17,8 @@ class Download(AbstractCheckPlugin):
     @asyncio.coroutine
     def __call__(self, client, dnode):
         logger.info('Test download speed :  running...')
-        dnode = 'http://{}'.format(dnode)
         start = time.clock()
-        r = requests.get(dnode, stream=True)
+        r = requests.get('http://{}'.format(dnode), stream=True)
         total_length = int(r.headers.get('content-length'))
         if total_length is None:
             logger.error("Empty file!")
