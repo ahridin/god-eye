@@ -12,4 +12,4 @@ def hello(request):
 
 app = web.Application(debug=True)
 app.router.add_route('GET', '/', hello)
-web.run_app(app)
+web.run_app(app, port=80)
