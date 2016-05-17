@@ -22,11 +22,11 @@ class TestPingPlugin(unittest.TestCase):
             queue = asyncio.Queue(loop=self.loop)
             ping = Ping(self.loop, queue)
             with aiohttp.ClientSession(loop=self.loop) as client:
-                yield from ping(client, 'httpbin.org/get')
+                yield from ping(client, 'http://httpbin.org/get')
             cor_result = yield from queue.get()
             result = yield from cor_result
             result = json.loads(result)
             self.assertIsInstance(result, dict)
-            self.assertEqual(result['url'], 'httpbin.org/get')
+            self.assertEqual(result['url'], 'http://httpbin.org/get')
 
         self.loop.run_until_complete(go())
