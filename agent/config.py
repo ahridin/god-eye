@@ -8,7 +8,11 @@ check_interval = 10  # option which APScheduler need
 enable_plugin = [
     {
         'name': 'Ping',
-        'path': 'check_plugins.ping'
+        'path': 'agent.check_plugins.ping'
+    },
+    {
+        'name': 'Download',
+        'path': 'agent.check_plugins.download_speed'
     }
 ]
 
