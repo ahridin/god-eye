@@ -27,7 +27,7 @@ class SendResult(object):
                 logger.info(
                     "Connected to InfluxDB. Writing data to database...")
                 self.client.write_points(result)
-            except:
+            except Exception:
                 logging.exception(
                     "We get some problems when write points to database")
 
