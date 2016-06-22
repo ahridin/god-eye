@@ -4,5 +4,5 @@ aiohttp>=0.21.5
 flake8
 nose
 pep257
-serfclient
+serfclient==0.7.1
 influxdb
