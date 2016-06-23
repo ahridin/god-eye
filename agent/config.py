@@ -13,6 +13,10 @@ enable_plugin = [
     {
         'name': 'Download',
         'path': 'agent.check_plugins.download_speed'
+    },
+    {
+        'name': 'FirstByte',
+        'path': 'agent.check_plugins.time_to_first_byte'
     }
 ]
 
