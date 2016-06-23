@@ -36,7 +36,7 @@ class FirstByte(AbstractCheckPlugin):
         download and processing data
         """
         logger.info("Caculation time for download first byte done!")
-        return [self.output([self._snode, url, str(datetime.now()), delta])]
+        return [self.output([self._snode, url, datetime.now(), delta])]
 
     def output(self, my_array):
         return {
