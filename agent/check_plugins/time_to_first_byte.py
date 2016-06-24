@@ -32,8 +32,14 @@ class FirstByte(AbstractCheckPlugin):
             
     @asyncio.coroutine
     def get_result(self, url, delta):
-        """
-        download and processing data
+        """Download and processing data.
+
+        Args:
+            url (str): url file download.
+            delta (s): time to download first kB.(1024 Byte)
+        
+        Returns:
+            (list) with item 0 : json format for influxdb
         """
         logger.info("Caculation time for download first byte done!")
         return [self.output([self._snode, url, datetime.now(), delta])]

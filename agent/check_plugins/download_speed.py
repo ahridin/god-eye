@@ -39,9 +39,19 @@ class Download(AbstractCheckPlugin):
 
     @asyncio.coroutine
     def get_result(self, url, start, end, total_length, array_speed):
+        """Download and processing data.
+
+        Args:
+            url (str): url file download.
+            start (float):  It's time which started download.
+            end (float): It's time which finished download.
+            total_length (int): size of file download (Byte)
+            array_speed (list): list download speeds for each 1024 Byte (kB/s)
+
+        Returns:
+            list with item 0 : json format for influxdb
         """
-        download and processing data
-        """
+
         download_speed = total_length // (time.clock() - start)
         accelerationS = self.acceleration(array_speed)
         mean_deviationS = self.mean_deviation(array_speed, download_speed)
@@ -50,6 +60,17 @@ class Download(AbstractCheckPlugin):
         return [self.output([self._snode, url, datetime.now(), download_speed, mean_deviationS, accelerationS])]
 
     def acceleration(self, array_speed):
+        """Caculate acceleration.
+
+        By get the highest speed in the first cycle.
+
+        Args:
+            array_speed (list): list download times for each 1024 Byte
+
+        Returns:
+            acceleration (kB/s) : the deviation between highest speed and first byte speed
+        """
+
         if len(array_speed) == 0:
             return 0
         speed_before = array_speed[0]
@@ -62,6 +83,16 @@ class Download(AbstractCheckPlugin):
         return speed_before - array_speed[0]
 
     def mean_deviation(self, array_speed, download_speed):
+        """The mean deviation each downloads with download_speed.
+
+        Args:
+            array_speed (list): list download speeds for each kB.
+            download_speed (kB/s): mean download speed.
+        
+        Returns:
+            mean_deviation (kB/s)
+        """
+
         if len(array_speed) == 0:
             return 0
         sum = 0
@@ -71,6 +102,15 @@ class Download(AbstractCheckPlugin):
         return sum//len(array_speed)
 
     def output(self, my_array):
+        """Reformat my_array for inserting into influxdb.
+
+        Args:
+            my_array (list): [self._snode, url, str(datetime.now()), download_speed, mean_deviationS, accelerationS]
+        
+        Returns:
+            json format for influxdb
+        """
+        
         return {
             "measurement": "download_speed",
             "tags": {
@@ -84,3 +124,4 @@ class Download(AbstractCheckPlugin):
                 "acceleration": my_array[5]
             }
         }
+    
