@@ -37,4 +37,7 @@ serf: Node name conflicts with another node at 192.168.145.152:7946. Names must 
 =>>Đề xuất ban đầu là đặt hostname của các node khác nhau.
 
 ## DEMO:
+
+[Exported Grafana GodEye-Dashbash](https://github.com/PiScale/god-eye/blob/master/docs/GodEye%20Dashbash-1466755533698.json)
+
 ![DEMO](https://github.com/PiScale/god-eye/blob/master/docs/2016-06-24.png)
