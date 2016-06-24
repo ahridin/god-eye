@@ -1,11 +1,11 @@
 ### Documents
-[**Introduction - Why this project was born**](https://github.com/PiScale/god-eye/blob/agent/docs/Introduction.md)
+[**Introduction - Why this project was born**](https://github.com/PiScale/god-eye/blob/master/docs/Introduction.md)
 
-[**Technology & Architecture Design**](https://github.com/PiScale/god-eye/blob/agent/docs/Architecture.md)
+[**Technology & Architecture Design**](https://github.com/PiScale/god-eye/blob/master/docs/Architecture.md)
 
-[Agent changelog](https://github.com/PiScale/god-eye/blob/agent/docs/Agent.md)
+[Agent changelog](https://github.com/PiScale/god-eye/blob/master/docs/Agent.md)
 
-[Agent-proposal](https://github.com/PiScale/god-eye/blob/agent/docs/Agent-proposal.md)
+[Agent-proposal](https://github.com/PiScale/god-eye/blob/master/docs/Agent-proposal.md)
 
 
 ### How to run?
@@ -35,3 +35,6 @@ sudo apt-get install python3.5
 serf: Node name conflicts with another node at 192.168.145.152:7946. Names must be unique! (Resolution enabled: true)
 ```
 =>>Đề xuất ban đầu là đặt hostname của các node khác nhau.
+
+## DEMO:
+![DEMO](https://github.com/PiScale/god-eye/blob/master/docs/2016-06-24.png)
