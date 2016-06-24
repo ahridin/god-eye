@@ -77,7 +77,7 @@ class Download(AbstractCheckPlugin):
                 "snode": "{}".format(my_array[0]),
                 "dnode": "{}".format(my_array[1])
             },
-            "time": "{}".format(my_array[2]),
+            # "time": "{}".format(my_array[2]),
             "fields": {
                 "speed": my_array[3],
                 "mean_deviation": my_array[4],

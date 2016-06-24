@@ -45,7 +45,7 @@ class FirstByte(AbstractCheckPlugin):
                 "snode": "{}".format(my_array[0]),
                 "dnode": "{}".format(my_array[1])
             },
-            "time": "{}".format(my_array[2]),
+            # "time": "{}".format(my_array[2]),
             "fields": {
                 "value": my_array[3]
             }
