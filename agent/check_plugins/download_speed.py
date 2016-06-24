@@ -46,7 +46,8 @@ class Download(AbstractCheckPlugin):
         accelerationS = self.acceleration(array_speed)
         mean_deviationS = self.mean_deviation(array_speed, download_speed)
         logger.info("Test download speed done!")
-        return [self.output([self._snode, url, str(datetime.now()), download_speed, mean_deviationS, accelerationS])]
+        #TODO Bỏ time, để kiểm tra xem db có ghi đc dữ liệu hay chưa
+        return [self.output([self._snode, url, datetime.now(), download_speed, mean_deviationS, accelerationS])]
 
     def acceleration(self, array_speed):
         if len(array_speed) == 0:
@@ -76,7 +77,7 @@ class Download(AbstractCheckPlugin):
                 "snode": "{}".format(my_array[0]),
                 "dnode": "{}".format(my_array[1])
             },
-            "time": "{}".format(my_array[2]),
+            # "time": "{}".format(my_array[2]),
             "fields": {
                 "speed": my_array[3],
                 "mean_deviation": my_array[4],

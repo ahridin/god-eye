@@ -27,9 +27,10 @@ class SendResult(object):
                 logger.info(
                     "Connected to InfluxDB. Writing data to database...")
                 self.client.write_points(result)
-            except Exception:
+
+            except Exception as e:
                 logging.exception(
-                    "We get some problems when write points to database")
+                    "We get some problems when write points to database: ", e)
 
 
 class InfluxDBHandler(object):
@@ -42,11 +43,11 @@ class InfluxDBHandler(object):
         self.database = config.INFLUXDB_DBNAME
 
     def get_client(self):
-        client = None
+        # client = None
         try:
             logging.info("Connecting to InfluxDB...")
-            client = InfluxDBClient(self.host, self.port, self.username,
+            return InfluxDBClient(self.host, self.port, self.username,
                                     self.password, self.database)
-        except:
-            logging.exception("Connect to InfuxDB is failed!")
-        return client
+        except Exception as e:
+            logging.exception("Connect to InfuxDB is failed!: ", e)
+        # return client
